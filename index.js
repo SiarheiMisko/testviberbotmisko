@@ -13,10 +13,16 @@ const bot = new ViberBot({
 
 app.use("/viber/webhook", bot.middleware());
 
-bot.onTextMessage(/^hi|hello$/i, (message, response) =>
-    response.send(new TextMessage(`Hi there ${response.userProfile.name}. I am ${bot.name}`)));
+// bot.onTextMessage(/^hi|hello$/i, (message, response) =>
+//     response.send(new TextMessage(`Hi there ${response.userProfile.name}. I am ${bot.name}`)));
 
-bot.onError(err => logger.error(err));
+// Perfect! Now here's the key part:
+bot.on(BotEvents.MESSAGE_RECEIVED, (message, response) => {
+	// Echo's back the message to the client. Your bot logic should sit here.
+	response.send(message);
+});
+
+bot.onError(err => console.log(err));
 
 bot.onConversationStarted((userProfile, isSubscribed, context, onFinish) =>
 	onFinish(new TextMessage(`Hi, ${userProfile.name}! Nice to meet you.`)));
